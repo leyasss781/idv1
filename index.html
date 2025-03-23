@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>충전 금액 계산기</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            margin: 0;
+        }
+        .sidebar {
+            width: 15%;
+            background-color: #c8e6c9;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sidebar h3 {
+            text-transform: uppercase;
+            text-align: center;
+        }
+        .sidebar .footer {
+            font-size: 10px;
+            color: #888;
+            text-align: center;
+        }
+        .content {
+            width: 85%;
+            padding: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: row;
+                justify-content: space-around;
+                padding: 10px 0;
+            }
+            .sidebar ul {
+                display: flex;
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
+            .sidebar ul li {
+                margin: 0 10px;
+            }
+            .content {
+                width: 100%;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h3>Identity V</h3>
+        <ul>
+            <li><a href="#" onclick="showPage('gacha-calc')">정수</a></li>
+            <li><a href="#" onclick="showPage('currency-calc')">메아리</a></li>
+            <li><a href="#" onclick="showPage('efficiency-info')">최고 효율 정보</a></li>
+        </ul>
+        <div class="footer">@leya_sss</div>
+    </div>
+    
+    <div class="content">
+        <div id="gacha-calc">
+            <h2>정수 뽑기 횟수당 충전 금액 계산</h2>
+            <label for="draws">앞으로 확정까지 남은 뽑기 횟수:</label>
+            <input type="number" id="draws" min="1">
+            <button onclick="calculateDraws()">계산</button>
+            <p>필요한 메아리 개수: <span id="needed"></span></p>
+            <p>필요한 금액 (iOS): <span id="ios"></span> 원</p>
+            <p>필요한 금액 (안드로이드): <span id="android"></span> 원</p>
+        </div>
+
+        <div id="currency-calc" class="hidden">
+            <h2>필요한 메아리당 금액</h2>
+            <label for="currency">필요한 메아리 수:</label>
+            <input type="number" id="currency" min="1">
+            <button onclick="calculateCurrency()">계산</button>
+            <p>필요한 금액 (iOS): <span id="currency-ios"></span> 원</p>
+            <p>필요한 금액 (안드로이드): <span id="currency-android"></span> 원</p>
+        </div>
+        
+        <div id="efficiency-info" class="hidden">
+            <h2>메아리 현질 최고 효율</h2>
+            <p>1. 휴대폰 설정에서 언어를 일본으로 변경</p>
+            <p>2. 오인격 재접속</p>
+            <p>3. 일섭 기준 결제 효율</p>
+            <ul>
+                <li>iOS 기준: 80메아리</li>
+                <li>안드로이드 기준: 1790메아리</li>
+            </ul>
+            <p><b>단,</b> 설 메아리 패키지가 있을 경우 최고 효율은 설 패키지 2</p>
+        </div>
+    </div>
+    
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.content > div').forEach(div => {
+                div.classList.add('hidden');
+            });
+            document.getElementById(pageId).classList.remove('hidden');
+        }
+
+        function calculateDraws() {
+            let a = document.getElementById("draws").value; 
+            let sum = a * 96;
+            let ios = Math.ceil(sum * 1100) / 80;
+            let android = Math.ceil(sum * 28000) / 1790;
+            document.getElementById("needed").textContent = sum;
+            document.getElementById("ios").textContent = ios.toLocaleString(); 
+            document.getElementById("android").textContent = android.toLocaleString();
+        }
+
+        function calculateCurrency() {
+            let currency = document.getElementById("currency").value;
+            let ios = (currency * 1100) / 80;
+            let android = (currency * 28000) / 1790;
+            document.getElementById("currency-ios").textContent = ios.toLocaleString(); 
+            document.getElementById("currency-android").textContent = android.toLocaleString();
+        }
+    </script>
+</body>
+</html>
