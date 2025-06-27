@@ -1,138 +1,259 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>충전 금액 계산기</title>
-    <style>
-        body {
-            display: flex;
-            flex-direction: row;
-            height: 100vh;
-            margin: 0;
-        }
-        .sidebar {
-            width: 15%;
-            background-color: #c8e6c9;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-        .sidebar h3 {
-            text-transform: uppercase;
-            text-align: center;
-        }
-        .sidebar .footer {
-            font-size: 10px;
-            color: #888;
-            text-align: center;
-        }
-        .content {
-            width: 85%;
-            padding: 20px;
-        }
-        .hidden {
-            display: none;
-        }
-        
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                display: flex;
-                flex-direction: row;
-                justify-content: space-around;
-                padding: 10px 0;
-            }
-            .sidebar ul {
-                display: flex;
-                list-style: none;
-                padding: 0;
-                margin: 0;
-            }
-            .sidebar ul li {
-                margin: 0 10px;
-            }
-            .content {
-                width: 100%;
-                padding: 10px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>충전 금액 계산기</title>
+  <style>
+    body {
+      display: flex;
+      flex-direction: row;
+      height: 100vh;
+      margin: 0;
+      font-family: sans-serif;
+    }
+    .sidebar {
+      width: 15%;
+      background-color: #c8e6c9;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h3 {
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+    .sidebar ul li {
+      margin: 10px 0;
+      text-align: center;
+    }
+    .sidebar ul li a {
+      text-decoration: none;
+      color: #1b5e20;
+      font-weight: bold;
+      display: inline-block;
+      padding: 4px 8px;
+    }
+    .sidebar .footer {
+      font-size: 10px;
+      color: #888;
+      text-align: center;
+    }
+    .content {
+      width: 85%;
+      padding: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .result-block {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .small-text {
+      font-size: 0.85em;
+      color: #666;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      .sidebar ul {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        padding: 0;
+        margin: 0;
+      }
+      .sidebar ul li {
+        margin: 0 5px;
+      }
+      .sidebar h3 {
+        display: none;
+      }
+      .content {
+        width: 100%;
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="sidebar">
-        <h3>Identity V</h3>
-        <ul>
-            <li><a href="#" onclick="showPage('gacha-calc')">정수</a></li>
-            <li><a href="#" onclick="showPage('currency-calc')">메아리</a></li>
-            <li><a href="#" onclick="showPage('efficiency-info')">최고 효율 정보</a></li>
-        </ul>
-        <div class="footer">@leya_sss</div>
+  <div class="sidebar">
+    <h3>Identity V</h3>
+    <ul>
+      <li><a href="#" onclick="showPage('gacha-calc')">정수</a></li>
+      <li><a href="#" onclick="showPage('currency-calc')">메아리</a></li>
+      <li><a href="#" onclick="showPage('discount-info')">할인율</a></li>
+      <li><a href="#" onclick="showPage('efficiency-info')">정보</a></li>
+    </ul>
+    <div class="footer">@leya_sss</div>
+  </div>
+
+  <div class="content">
+    <!-- 정수 -->
+    <div id="gacha-calc">
+      <h2>정수 계산</h2>
+      <label for="draws">남은 뽑기 횟수:</label>
+      <input type="number" id="draws" min="1">
+      <button onclick="calculateDraws()">계산</button>
+      <div id="gacha-result" class="hidden result-block"></div>
     </div>
-    
-    <div class="content">
-        <div id="gacha-calc">
-            <h2>정수 뽑기 횟수당 충전 금액 계산</h2>
-            <label for="draws">앞으로 확정까지 남은 뽑기 횟수:</label>
-            <input type="number" id="draws" min="1">
-            <button onclick="calculateDraws()">계산</button>
-            <p>필요한 메아리 개수: <span id="needed"></span></p>
-            <p>필요한 금액 (iOS): <span id="ios"></span> 원</p>
-            <p>필요한 금액 (안드로이드): <span id="android"></span> 원</p>
-        </div>
 
-        <div id="currency-calc" class="hidden">
-            <h2>필요한 메아리당 금액</h2>
-            <label for="currency">필요한 메아리 수:</label>
-            <input type="number" id="currency" min="1">
-            <button onclick="calculateCurrency()">계산</button>
-            <p>필요한 금액 (iOS): <span id="currency-ios"></span> 원</p>
-            <p>필요한 금액 (안드로이드): <span id="currency-android"></span> 원</p>
-        </div>
-        
-        <div id="efficiency-info" class="hidden">
-            <h2>메아리 현질 최고 효율</h2>
-            <p>1. 휴대폰 설정에서 언어를 일본으로 변경</p>
-            <p>2. 오인격 재접속</p>
-            <p>3. 일섭 기준 결제 효율</p>
-            <ul>
-                <li>iOS 기준: 80메아리</li>
-                <li>안드로이드 기준: 1790메아리</li>
-            </ul>
-            <p><b>단,</b> 설 메아리 패키지가 있을 경우 최고 효율은 설 패키지 2</p>
-        </div>
+    <!-- 메아리 -->
+    <div id="currency-calc" class="hidden">
+      <h2>메아리 계산</h2>
+      <label for="currency">필요한 메아리 수:</label>
+      <input type="number" id="currency" min="1">
+      <button onclick="calculateCurrency()">계산</button>
+      <div id="currency-result" class="hidden result-block"></div>
     </div>
-    
-    <script>
-        function showPage(pageId) {
-            document.querySelectorAll('.content > div').forEach(div => {
-                div.classList.add('hidden');
-            });
-            document.getElementById(pageId).classList.remove('hidden');
-        }
 
-        function calculateDraws() {
-            let a = document.getElementById("draws").value; 
-            let sum = a * 96;
-            let ios = Math.ceil(sum * 1100) / 80;
-            let android = Math.ceil(sum * 28000) / 1790;
-            document.getElementById("needed").textContent = sum;
-            document.getElementById("ios").textContent = ios.toLocaleString(); 
-            document.getElementById("android").textContent = android.toLocaleString();
-        }
+    <!-- 할인율 -->
+    <div id="discount-info" class="hidden">
+      <h2>할인율 계산기</h2>
+      <label for="original-price">원래 메아리 수:</label>
+      <input type="number" id="original-price" min="1">
+      <button onclick="calculateDiscount()">계산</button>
+      <div style="margin-top: 15px;">
+        <button onclick="applyRate(0.90)">10% 할인</button>
+        <button onclick="applyRate(0.85)">15% 할인</button>
+        <button onclick="applyRate(0.80)">20% 할인</button>
+        <button onclick="applyRate(0.60)">40% 할인</button>
+        <button onclick="toggleCustomDiscount()">기타</button>
+      </div>
+      <div id="custom-discount-container" class="hidden" style="margin-top: 10px;">
+        <label for="custom-rate">직접 입력 (%):</label>
+        <input type="number" id="custom-rate" min="1" max="99">
+        <button onclick="applyCustomRate()">적용</button>
+      </div>
+      <p>할인 적용 후 메아리 수: <span id="discounted-price"></span></p>
+      <button style="font-size: 12px; padding: 5px 10px;" onclick="sendToCurrency()">메아리 계산기로 옮기기</button>
+    </div>
 
-        function calculateCurrency() {
-            let currency = document.getElementById("currency").value;
-            let ios = (currency * 1100) / 80;
-            let android = (currency * 28000) / 1790;
-            document.getElementById("currency-ios").textContent = ios.toLocaleString(); 
-            document.getElementById("currency-android").textContent = android.toLocaleString();
-        }
-    </script>
+    <!-- 정보 -->
+    <div id="efficiency-info" class="hidden">
+      <h2>메아리 효율 정보</h2>
+      <ul>
+        <li>iOS: 80메아리 / 1,100원</li>
+        <li>Android: 1790메아리 / 28,000원</li>
+      </ul>
+      <p>※ 휴대폰 언어를 일본어로 설정 시의 효율 ※</p><br>
+      <h3>스킨/악세 가격</h3>
+      <ul>
+        <li>황스+황악 패키지: 3,268</li>
+        <li>황스+보악 패키지: 2,688</li>
+        <li>보스+황악 패키지: 2,618</li>
+        <li>보스+보악 패키지: 1,688</li>
+      </ul>
+      <h3>첫 주 할인</h3>
+      <ul>
+        <li>희대의 스킨: 20%</li>
+        <li>진기한 스킨: 15%</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    function showPage(id) {
+      document.querySelectorAll('.content > div').forEach(div => div.classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function displayTopup(amount, unit, price) {
+      const count = Math.ceil(amount / unit);
+      const total = count * price;
+      const leftover = (count * unit) - amount;
+      const simple = Math.ceil(amount * price / unit);
+      return {
+        text: `${unit}메아리 x ${count}회 | ${total.toLocaleString()}원 사용 (남은 메아리: ${leftover}개)`,
+        simple: `단순 계산: ${simple.toLocaleString()} 원`
+      };
+    }
+
+    function calculateDraws() {
+      const draws = parseInt(document.getElementById("draws").value);
+      if (!draws || draws <= 0) return;
+      const amount = draws * 96;
+      const ios = displayTopup(amount, 80, 1100);
+      const android = displayTopup(amount, 1790, 28000);
+      document.getElementById("gacha-result").innerHTML = `
+        <div><strong>iOS</strong></div>
+        <div>${ios.text}</div>
+        <div class="small-text">${ios.simple}</div><br>
+        <div><strong>ANDROID</strong></div>
+        <div>${android.text}</div>
+        <div class="small-text">${android.simple}</div>
+      `;
+      document.getElementById("gacha-result").classList.remove("hidden");
+    }
+
+    function calculateCurrency() {
+      const amount = parseInt(document.getElementById("currency").value);
+      if (!amount || amount <= 0) return;
+      const ios = displayTopup(amount, 80, 1100);
+      const android = displayTopup(amount, 1790, 28000);
+      document.getElementById("currency-result").innerHTML = `
+        <div><strong>iOS</strong></div>
+        <div>${ios.text}</div>
+        <div class="small-text">${ios.simple}</div><br>
+        <div><strong>ANDROID</strong></div>
+        <div>${android.text}</div>
+        <div class="small-text">${android.simple}</div>
+      `;
+      document.getElementById("currency-result").classList.remove("hidden");
+    }
+
+    function calculateDiscount() {
+      const price = parseFloat(document.getElementById("original-price").value);
+      if (!price) return;
+      document.getElementById("discounted-price").textContent = Math.floor(price);
+      document.getElementById("discounted-price").dataset.value = Math.floor(price);
+    }
+
+    function applyRate(rate) {
+      const price = parseFloat(document.getElementById("original-price").value);
+      if (!price) return;
+      const discounted = Math.floor(price * rate);
+      document.getElementById("discounted-price").textContent = discounted;
+      document.getElementById("discounted-price").dataset.value = discounted;
+    }
+
+    function toggleCustomDiscount() {
+      document.getElementById("custom-discount-container").classList.toggle("hidden");
+    }
+
+    function applyCustomRate() {
+      const price = parseFloat(document.getElementById("original-price").value);
+      const percent = parseFloat(document.getElementById("custom-rate").value);
+      if (!price || !percent || percent <= 0 || percent >= 100) return;
+      const discounted = Math.floor(price * (100 - percent) / 100);
+      document.getElementById("discounted-price").textContent = discounted;
+      document.getElementById("discounted-price").dataset.value = discounted;
+    }
+
+    function sendToCurrency() {
+      const val = document.getElementById("discounted-price").dataset.value;
+      if (!val) return;
+      document.getElementById("currency").value = val;
+      showPage('currency-calc');
+      setTimeout(() => {
+        calculateCurrency();
+      }, 50);
+    }
+  </script>
 </body>
 </html>
