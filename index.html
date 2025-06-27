@@ -94,19 +94,17 @@
 <body>
   <div class="sidebar">
     <h3>Identity V</h3>
-    <ul>
-      <li><a href="#" onclick="showPage('gacha-calc')">정수</a></li>
-      <li><a href="#" onclick="showPage('currency-calc')">메아리</a></li>
-      <li><a href="#" onclick="showPage('discount-info')">할인율</a></li>
-      <li><a href="#" onclick="showPage('efficiency-info')">정보</a></li>
-    </ul>
+          <a href="#" onclick="showPage('gacha-calc')">정수</a>
+          <a href="#" onclick="showPage('currency-calc')">메아리</a>
+          <a href="#" onclick="showPage('discount-info')">할인율</a>
+         <a href="#" onclick="showPage('efficiency-info')">정보</a>
     <div class="footer">@leya_sss</div>
   </div>
 
   <div class="content">
     <!-- 정수 -->
     <div id="gacha-calc">
-      <h1>정수 계산</h1>
+      <h1>정수 계산기기</h1>
       <label for="draws">남은 뽑기 횟수:</label>
       <input type="number" id="draws" min="1">
       <button onclick="calculateDraws()">계산</button>
